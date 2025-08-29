@@ -29,19 +29,75 @@ const foodEmojis = {
   '灌汤包': '🥟', '炒年糕': '🍚', '舒芙蕾': '🍰', '再选一次': '🎲'
 };
 
-// 从 menu.json 读取菜谱
-fetch("menu.json")
-  .then(response => response.json())
-  .then(data => {
+// 从 menu.json 读取菜谱 - 使用更robust的加载方式
+async function loadMenu() {
+  try {
+    // 显示加载状态
+    document.querySelector('.placeholder p').textContent = '正在加载美味菜单...';
+    
+    const response = await fetch("menu.json");
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const data = await response.json();
     dishes = data;
     updateStats();
+    
     // 添加加载完成动画
     document.querySelector('.food-icon').style.animation = 'bounce 1s ease-in-out';
-  })
-  .catch(err => {
-    console.error("读取 menu.json 出错:", err);
-    document.querySelector('.placeholder p').textContent = '菜单加载失败，请刷新页面重试';
-  });
+    document.querySelector('.placeholder p').textContent = '点击下方按钮发现今日美食';
+    
+  } catch (error) {
+    console.error("读取 menu.json 出错:", error);
+    
+    // 提供备用方案 - 使用内置菜单
+    console.log("使用备用菜单数据");
+    dishes = getBackupMenu();
+    updateStats();
+    
+    document.querySelector('.placeholder p').textContent = '使用本地菜单，点击下方按钮开始';
+  }
+}
+
+// 备用菜单数据 - 当fetch失败时使用
+function getBackupMenu() {
+  return [
+    { "id": 1, "name": "麻辣烫" },
+    { "id": 2, "name": "鸡公煲" },
+    { "id": 3, "name": "卤肉卷" },
+    { "id": 4, "name": "火鸡面" },
+    { "id": 5, "name": "卤粉" },
+    { "id": 6, "name": "兰州拉面" },
+    { "id": 7, "name": "烤冷面" },
+    { "id": 8, "name": "蛋炒饭" },
+    { "id": 9, "name": "麻薯" },
+    { "id": 10, "name": "面包" },
+    { "id": 11, "name": "馄饨" },
+    { "id": 12, "name": "烤肉" },
+    { "id": 13, "name": "轻食" },
+    { "id": 14, "name": "新疆炒米粉" },
+    { "id": 15, "name": "泡菜" },
+    { "id": 16, "name": "福鼎肉片" },
+    { "id": 17, "name": "凉皮" },
+    { "id": 18, "name": "凉面" },
+    { "id": 19, "name": "汉堡" },
+    { "id": 20, "name": "烧烤" },
+    { "id": 21, "name": "麻辣香锅" },
+    { "id": 22, "name": "煲仔饭" },
+    { "id": 23, "name": "石锅拌饭" },
+    { "id": 24, "name": "重庆小面" },
+    { "id": 25, "name": "煎饼果子" },
+    { "id": 26, "name": "铁板饭" },
+    { "id": 27, "name": "卷饼" },
+    { "id": 28, "name": "饭团" },
+    { "id": 29, "name": "盖饭" },
+    { "id": 30, "name": "三明治" }
+  ];
+}
+
+// 启动加载
+loadMenu();
 
 // 更新统计信息
 function updateStats() {

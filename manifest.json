@@ -1,0 +1,17 @@
+{
+  "name": "今天吃什么？",
+  "short_name": "吃什么",
+  "description": "让美食来拯救你的选择困难症！",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#667eea",
+  "theme_color": "#667eea",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiBmaWxsPSIjNjY3ZWVhIiByeD0iMjQiLz4KPHN2ZyB4PSI0OCIgeT0iNDgiIHdpZHRoPSI5NiIgaGVpZ2h0PSI5NiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIj4KPHBhdGggZD0iTTExIDEzSDEzVjE4SDExVjEzWiIgZmlsbD0id2hpdGUiLz4KPHBhdGggZD0iTTExIDZIMTNWMTFIMTFWNloiIGZpbGw9IndoaXRlIi8+CjxwYXRoIGQ9Ik0xMiAyQzEzLjEwNDYgMiAxNCAyLjg5NTQzIDE0IDRWMkgxOFYxOEMxOCAxOS4xMDQ2IDE3LjEwNDYgMjAgMTYgMjBINEMyLjg5NTQzIDIwIDIgMTkuMTA0NiAyIDE4VjRDMiAyLjg5NTQzIDIuODk1NDMgMiA0IDJIMTBWNEgxMFY0QzEwIDIuODk1NDMgMTAuODk1NCAyIDEyIDJaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4KPC9zdmc+",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    }
+  ]
+}
