@@ -29,13 +29,22 @@ const foodEmojis = {
   '灌汤包': '🥟', '炒年糕': '🍚', '舒芙蕾': '🍰', '再选一次': '🎲'
 };
 
-// 从 menu.json 读取菜谱 - 使用更robust的加载方式
+// 从 menu.json 读取菜谱 - 微信浏览器兼容版本
 async function loadMenu() {
   try {
     // 显示加载状态
     document.querySelector('.placeholder p').textContent = '正在加载美味菜单...';
     
-    const response = await fetch("menu.json");
+    // 添加时间戳避免微信缓存
+    const timestamp = new Date().getTime();
+    const response = await fetch(`menu.json?t=${timestamp}`, {
+      method: 'GET',
+      headers: {
+        'Cache-Control': 'no-cache',
+        'Pragma': 'no-cache'
+      }
+    });
+    
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
@@ -51,17 +60,61 @@ async function loadMenu() {
   } catch (error) {
     console.error("读取 menu.json 出错:", error);
     
-    // 提供备用方案 - 使用内置菜单
-    console.log("使用备用菜单数据");
-    dishes = getBackupMenu();
-    updateStats();
-    
-    document.querySelector('.placeholder p').textContent = '使用本地菜单，点击下方按钮开始';
+    // 微信浏览器特殊处理 - 使用XHR作为备选
+    console.log("尝试XHR方式加载...");
+    try {
+      await loadMenuWithXHR();
+    } catch (xhrError) {
+      console.error("XHR也失败了，使用备用菜单", xhrError);
+      useBackupMenu();
+    }
   }
 }
 
-// 备用菜单数据 - 当fetch失败时使用
+// 使用XMLHttpRequest作为微信浏览器的备选方案
+function loadMenuWithXHR() {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    const timestamp = new Date().getTime();
+    
+    xhr.open('GET', `menu.json?t=${timestamp}`, true);
+    xhr.setRequestHeader('Cache-Control', 'no-cache');
+    xhr.setRequestHeader('Pragma', 'no-cache');
+    
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        try {
+          dishes = JSON.parse(xhr.responseText);
+          updateStats();
+          document.querySelector('.food-icon').style.animation = 'bounce 1s ease-in-out';
+          document.querySelector('.placeholder p').textContent = '点击下方按钮发现今日美食';
+          resolve();
+        } catch (e) {
+          reject(e);
+        }
+      } else {
+        reject(new Error(`XHR failed with status ${xhr.status}`));
+      }
+    };
+    
+    xhr.onerror = function() {
+      reject(new Error('XHR request failed'));
+    };
+    
+    xhr.send();
+  });
+}
+
+// 使用备用菜单
+function useBackupMenu() {
+  dishes = getBackupMenu();
+  updateStats();
+  document.querySelector('.placeholder p').textContent = '使用本地菜单，点击下方按钮开始';
+}
+
+// 微信浏览器优化的备用菜单数据
 function getBackupMenu() {
+  // 直接返回完整的菜单数据，避免额外的网络请求
   return [
     { "id": 1, "name": "麻辣烫" },
     { "id": 2, "name": "鸡公煲" },
@@ -92,7 +145,27 @@ function getBackupMenu() {
     { "id": 27, "name": "卷饼" },
     { "id": 28, "name": "饭团" },
     { "id": 29, "name": "盖饭" },
-    { "id": 30, "name": "三明治" }
+    { "id": 30, "name": "三明治" },
+    { "id": 31, "name": "刀削面" },
+    { "id": 32, "name": "泡面" },
+    { "id": 33, "name": "小龙虾" },
+    { "id": 34, "name": "串串火锅" },
+    { "id": 35, "name": "烤馕" },
+    { "id": 36, "name": "自选菜" },
+    { "id": 37, "name": "粥" },
+    { "id": 38, "name": "炸鸡" },
+    { "id": 39, "name": "过桥米线" },
+    { "id": 40, "name": "水果捞" },
+    { "id": 41, "name": "关东煮" },
+    { "id": 42, "name": "塔可" },
+    { "id": 43, "name": "锅盔" },
+    { "id": 44, "name": "肠粉" },
+    { "id": 45, "name": "酸辣粉" },
+    { "id": 46, "name": "冒菜" },
+    { "id": 47, "name": "黄焖鸡" },
+    { "id": 48, "name": "意面" },
+    { "id": 49, "name": "水饺" },
+    { "id": 50, "name": "抄手" }
   ];
 }
 
