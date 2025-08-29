@@ -129,9 +129,15 @@ const foodEmojis = {
 
 // 初始化
 function init() {
+  console.log('菜单加载成功，共' + dishes.length + '道菜');
   updateStats();
   document.querySelector('.food-icon').style.animation = 'bounce 1s ease-in-out';
   document.querySelector('.placeholder p').textContent = '点击下方按钮发现今日美食';
+  
+  // 微信浏览器调试信息
+  if (typeof WeixinJSBridge !== 'undefined') {
+    console.log('微信浏览器环境检测');
+  }
 }
 
 // 更新统计信息
@@ -177,77 +183,6 @@ function recommendDish() {
 
 // 事件监听
 document.addEventListener('DOMContentLoaded', init);
-document.getElementById("chooseBtn").addEventListener("click", recommendDish);
-document.getElementById("tryAgainBtn").addEventListener("click", recommendDish);
-
-// 键盘支持
-document.addEventListener('keydown', (e) => {
-  if (e.code === 'Space' || e.code === 'Enter') {
-    e.preventDefault();
-    recommendDish();
-  }
-});
-
-// 添加按钮点击效果
-document.querySelectorAll('button').forEach(button => {
-  button.addEventListener('click', function() {
-    this.style.transform = 'scale(0.95)';
-    setTimeout(() => {
-      this.style.transform = '';
-    }, 150);
-  });
-});
-
-// 更新统计信息
-function updateStats() {
-  document.getElementById('totalDishes').textContent = dishes.filter(d => d.name !== '再选一次').length;
-  document.getElementById('selectedCount').textContent = selectedCount;
-}
-
-// 获取食物对应的emoji
-function getFoodEmoji(foodName) {
-  return foodEmojis[foodName] || '🍽️';
-}
-
-// 显示推荐结果
-function showRecommendation(dish) {
-  const resultContainer = document.getElementById('resultContainer');
-  const resultText = document.getElementById('result');
-  const resultEmoji = document.getElementById('resultEmoji');
-  
-  // 更新文本和表情
-  resultText.textContent = dish.name;
-  resultEmoji.textContent = getFoodEmoji(dish.name);
-  
-  // 显示结果容器
-  resultContainer.style.display = 'block';
-  resultContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  
-  // 更新计数
-  selectedCount++;
-  updateStats();
-}
-
-// 随机推荐功能
-function recommendDish() {
-  if (dishes.length === 0) {
-    alert('菜单还没有加载好呢！');
-    return;
-  }
-  
-  // 过滤掉"再选一次"
-  const validDishes = dishes.filter(d => d.name !== '再选一次');
-  
-  if (validDishes.length === 0) {
-    alert('没有可选的菜品！');
-    return;
-  }
-  
-  const dish = validDishes[Math.floor(Math.random() * validDishes.length)];
-  showRecommendation(dish);
-}
-
-// 事件监听
 document.getElementById("chooseBtn").addEventListener("click", recommendDish);
 document.getElementById("tryAgainBtn").addEventListener("click", recommendDish);
 
